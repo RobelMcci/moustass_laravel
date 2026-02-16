@@ -7,6 +7,7 @@ export type LoginPayload = {
 
 export type LoginResponse = {
   token: string;
+  expires_in?: number;
 };
 
 export type RegisterPayload = {
@@ -18,7 +19,7 @@ export type MeResponse = {
   id: string;
   email: string;
   role: "ADMIN" | "CLIENT";
-  status?: "ACTIVE" | "INACTIVE" | "SUSPENDED";
+  status?: "active" | "disabled";
 };
 
 export const authApi = {

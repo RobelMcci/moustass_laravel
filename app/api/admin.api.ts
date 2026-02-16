@@ -4,30 +4,56 @@ export type AdminUser = {
   id: string;
   email: string;
   role: "ADMIN" | "CLIENT";
-  status: "ACTIVE" | "INACTIVE" | "SUSPENDED";
+  status: "active" | "disabled";
   createdAt?: string;
+};
+
+type AdminUsersResponse = {
+  users: Array<{
+    id: string | number;
+    email: string;
+    role: "ADMIN" | "CLIENT";
+    status: "active" | "disabled";
+    created_at?: string | null;
+  }>;
 };
 
 export type CreateUserPayload = {
   email: string;
   password: string;
   role: "ADMIN" | "CLIENT";
-  status?: "ACTIVE" | "INACTIVE" | "SUSPENDED";
+  status?: "active" | "disabled";
 };
 
 export type UpdateUserPayload = {
   role?: "ADMIN" | "CLIENT";
-  status?: "ACTIVE" | "INACTIVE" | "SUSPENDED";
+  status?: "active" | "disabled";
 };
+
+type BackupHistoryResponse = {
+  history: Array<{
+    id: string | number;
+    created_at?: string | null;
+    status?: string | null;
+  }>;
+};
+
+const mapAdminUser = (user: AdminUsersResponse["users"][number]): AdminUser => ({
+  id: String(user.id),
+  email: user.email,
+  role: user.role,
+  status: user.status,
+  createdAt: user.created_at ?? undefined,
+});
 
 export const adminApi = {
   listUsers: (token: string, onUnauthorized?: () => void) =>
-    request<AdminUser[]>({
+    request<AdminUsersResponse>({
       method: "GET",
       path: "/admin/users",
       token,
       onUnauthorized,
-    }),
+    }).then((response) => response.users.map(mapAdminUser)),
   createUser: (
     token: string,
     payload: CreateUserPayload,
@@ -75,10 +101,16 @@ export const adminApi = {
       onUnauthorized,
     }),
   backupHistory: (token: string, onUnauthorized?: () => void) =>
-    request<Array<{ id: string; createdAt: string; status?: string }>>({
+    request<BackupHistoryResponse>({
       method: "GET",
       path: "/admin/backups/history",
       token,
       onUnauthorized,
-    }),
+    }).then((response) =>
+      response.history.map((item) => ({
+        id: String(item.id),
+        createdAt: item.created_at ?? "",
+        status: item.status ?? undefined,
+      })),
+    ),
 };

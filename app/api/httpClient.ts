@@ -46,6 +46,13 @@ export async function request<T>({
       const data = await response.json();
       if (typeof data?.message === "string") {
         message = data.message;
+      } else if (data?.errors && typeof data.errors === "object") {
+        const details = Object.values(data.errors)
+          .flat()
+          .filter((item) => typeof item === "string");
+        if (details.length > 0) {
+          message = details.join(" ");
+        }
       }
     } catch {
       // ignore parsing errors

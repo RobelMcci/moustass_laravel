@@ -14,9 +14,7 @@ export default function AdminUserEdit() {
   const navigate = useNavigate();
   const [user, setUser] = useState<AdminUser | null>(null);
   const [role, setRole] = useState<"ADMIN" | "CLIENT">("CLIENT");
-  const [status, setStatus] = useState<"ACTIVE" | "INACTIVE" | "SUSPENDED">(
-    "ACTIVE",
-  );
+  const [status, setStatus] = useState<"active" | "disabled">("active");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -83,12 +81,11 @@ export default function AdminUserEdit() {
           label="Statut"
           value={status}
           onChange={(event) =>
-            setStatus(event.target.value as "ACTIVE" | "INACTIVE" | "SUSPENDED")
+            setStatus(event.target.value as "active" | "disabled")
           }
         >
-          <option value="ACTIVE">ACTIVE</option>
-          <option value="INACTIVE">INACTIVE</option>
-          <option value="SUSPENDED">SUSPENDED</option>
+          <option value="active">Actif</option>
+          <option value="disabled">Désactivé</option>
         </Select>
         <div className="flex gap-3">
           <Button type="submit" disabled={saving}>
