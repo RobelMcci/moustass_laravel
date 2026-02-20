@@ -13,7 +13,7 @@ export type ApiError = {
   message: string;
 };
 
-const BASE_URL = "https://www.moustass.com";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
 export async function request<T>({
   method,

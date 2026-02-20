@@ -28,9 +28,12 @@ export default function ClientLogin() {
 
     try {
       setLoading(true);
-      await login(email, password);
+      console.log("📝 Form submitted, calling login...");
+      const result = await login(email, password);
+      console.log("🎉 Login successful, redirecting...", result);
       navigate("/client", { replace: true });
     } catch (err) {
+      console.error("❌ Login error in form:", err);
       setError(getErrorMessage(err));
     } finally {
       setLoading(false);

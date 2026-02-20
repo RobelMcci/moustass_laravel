@@ -63,14 +63,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(async (email: string, password: string) => {
     setIsLoading(true);
     try {
+      console.log("🔐 Attempting login with:", email);
       const { token: jwt } = await authApi.login({ email, password });
+      console.log("✅ Login successful, token received");
       setToken(jwt);
       if (typeof window !== "undefined") {
         sessionStorage.setItem(TOKEN_KEY, jwt);
       }
       const profile = await authApi.me(jwt, logout);
+      console.log("✅ Profile loaded:", profile);
       setUser(profile);
       return profile;
+    } catch (error) {
+      console.error("❌ Login failed:", error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
