@@ -12,6 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/health',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->append(\App\Http\Middleware\HandleCors::class);
         $middleware->append(\App\Http\Middleware\ForceHttps::class);
         $middleware->alias([
             'jwt' => \App\Http\Middleware\JwtAuth::class,
