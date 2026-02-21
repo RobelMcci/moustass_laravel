@@ -6,11 +6,11 @@ export default function ClientDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-8 shadow-sm dark:border-blue-900/50 dark:from-blue-950/30 dark:to-indigo-950/30">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+      <div className="rounded-2xl border border-indigo-700 bg-gradient-to-br from-indigo-900 to-gray-900 p-8 shadow-lg">
+        <h1 className="text-2xl font-bold text-white">
           Bienvenue sur Moustass
         </h1>
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+        <p className="mt-2 text-sm text-gray-300">
           Connecté en tant que <span className="font-semibold">{user?.email}</span>
         </p>
       </div>
@@ -18,7 +18,7 @@ export default function ClientDashboard() {
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-900 text-blue-400">
               <svg
                 className="h-6 w-6"
                 fill="none"
@@ -34,10 +34,10 @@ export default function ClientDashboard() {
               </svg>
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+              <h3 className="font-semibold text-white">
                 Inbox
               </h3>
-              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+              <p className="mt-1 text-sm text-gray-400">
                 Consultez vos messages et notifications (bientôt disponible).
               </p>
             </div>
@@ -46,7 +46,7 @@ export default function ClientDashboard() {
 
         <Card>
           <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600 dark:bg-purple-950 dark:text-purple-400">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-900 text-indigo-400">
               <svg
                 className="h-6 w-6"
                 fill="none"
@@ -62,10 +62,10 @@ export default function ClientDashboard() {
               </svg>
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+              <h3 className="font-semibold text-white">
                 Audio
               </h3>
-              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+              <p className="mt-1 text-sm text-gray-400">
                 Accédez à vos contenus audio (bientôt disponible).
               </p>
             </div>
@@ -76,20 +76,20 @@ export default function ClientDashboard() {
       <Card title="Statut du compte">
         <div className="space-y-3 text-sm">
           <div className="flex justify-between">
-            <span className="text-gray-600 dark:text-gray-400">Email</span>
-            <span className="font-medium text-gray-900 dark:text-gray-100">
+            <span className="text-gray-400">Email</span>
+            <span className="font-medium text-white">
               {user?.email}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-600 dark:text-gray-400">Rôle</span>
-            <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-800 dark:bg-blue-950 dark:text-blue-200">
+            <span className="text-gray-400">Rôle</span>
+            <span className="inline-flex items-center rounded-full bg-blue-900 px-2.5 py-0.5 text-xs font-semibold text-blue-200">
               {user?.role}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-600 dark:text-gray-400">Statut</span>
-            <span className="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200">
+            <span className="text-gray-400">Statut</span>
+            <span className="inline-flex items-center rounded-full bg-emerald-900 px-2.5 py-0.5 text-xs font-semibold text-emerald-200">
               {user?.status ?? "ACTIVE"}
             </span>
           </div>

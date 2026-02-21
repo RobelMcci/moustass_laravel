@@ -2,11 +2,11 @@
 
 Frontend React pour Moustass Auth - Interface Client & Admin strictement alignée avec le backend.
 
-## 🎯 Objectif
+## Objectif
 
 Ce projet implémente le frontend du système d'authentification Moustass, conformément aux règles définies dans [rules_frontend.md](./rules_frontend.md).
 
-## ✨ Fonctionnalités
+## Fonctionnalités
 
 ### Espace Client
 - ✅ Authentification (Sign In / Sign Up)
@@ -21,7 +21,7 @@ Ce projet implémente le frontend du système d'authentification Moustass, confo
 - ✅ Backups & restauration
 - ✅ Historique des backups
 
-## 🔒 Sécurité
+## Sécurité
 
 - JWT géré via sessionStorage
 - Appels API vers `https://www.moustass.com` uniquement
@@ -40,7 +40,7 @@ Ce projet implémente le frontend du système d'authentification Moustass, confo
 
 - ≥ 15 caractères (+ mêmes critères que CLIENT)
 
-## 🚀 Développement
+## Développement
 
 ### Installation
 
@@ -56,7 +56,7 @@ npm run dev
 
 Application disponible sur `http://localhost:5173`
 
-## 📦 Build en production
+## Build en production
 
 ```bash
 npm run build
@@ -102,4 +102,4 @@ This template comes with [Tailwind CSS](https://tailwindcss.com/) already config
 
 ---
 
-Built with ❤️ using React Router.
+Built with using React Router.

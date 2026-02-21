@@ -5,7 +5,6 @@ import { authApi } from "../../api/auth.api";
 import { Button } from "../../shared/ui/Button";
 import { Input } from "../../shared/ui/Input";
 import { Alert } from "../../shared/ui/Alert";
-import { getErrorMessage } from "../../shared/utils/apiError";
 import {
   getPasswordRules,
   isPasswordValid,
@@ -76,22 +75,37 @@ export default function ClientLogin() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 px-6 py-16 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-950 via-gray-900 to-gray-950 px-6 py-16">
       <div className="w-full max-w-md">
+        {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-            Moustass
-          </h1>
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg">
+            <svg
+              className="h-8 w-8 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              />
+            </svg>
+          </div>
+          <h1 className="text-3xl font-bold text-white">Moustass</h1>
+          <p className="mt-2 text-sm text-gray-400">
             {mode === "signin"
-              ? "Bienvenue, connectez-vous à votre espace"
-              : "Créez votre compte client"}
+              ? "Connectez-vous à votre espace client"
+              : "Créez votre compte pour accéder aux services"}
           </p>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-gray-800 dark:bg-gray-900">
+        {/* Card */}
+        <div className="overflow-hidden rounded-2xl border border-gray-700 bg-gray-900/60 shadow-2xl backdrop-blur-sm">
           {/* Tabs */}
-          <div className="flex border-b border-gray-200 dark:border-gray-800">
+          <div className="flex border-b border-gray-700">
             <button
               type="button"
               onClick={() => {
@@ -101,8 +115,8 @@ export default function ClientLogin() {
               }}
               className={`flex-1 px-6 py-4 text-sm font-semibold transition ${
                 mode === "signin"
-                  ? "border-b-2 border-blue-600 text-blue-600"
-                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  ? "border-b-2 border-blue-500 text-blue-400"
+                  : "text-gray-400 hover:text-gray-300"
               }`}
             >
               Connexion
@@ -116,8 +130,8 @@ export default function ClientLogin() {
               }}
               className={`flex-1 px-6 py-4 text-sm font-semibold transition ${
                 mode === "signup"
-                  ? "border-b-2 border-blue-600 text-blue-600"
-                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  ? "border-b-2 border-blue-500 text-blue-400"
+                  : "text-gray-400 hover:text-gray-300"
               }`}
             >
               Inscription
@@ -126,8 +140,8 @@ export default function ClientLogin() {
 
           {/* Form content */}
           <div className="p-8">
-            {error ? <Alert type="error" message={error} /> : null}
-            {success ? <Alert type="success" message={success} /> : null}
+            {error && <Alert type="error" message={error} />}
+            {success && <Alert type="success" message={success} />}
 
             {mode === "signin" ? (
               <form className="mt-6 space-y-5" onSubmit={handleSignIn}>
@@ -153,12 +167,16 @@ export default function ClientLogin() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute bottom-2.5 right-3 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400"
+                    className="absolute bottom-2.5 right-3 text-xs text-gray-400 hover:text-gray-200"
                   >
                     {showPassword ? "Masquer" : "Afficher"}
                   </button>
                 </div>
-                <Button type="submit" disabled={loading} className="w-full">
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                >
                   {loading ? "Connexion en cours…" : "Se connecter"}
                 </Button>
               </form>
@@ -187,7 +205,7 @@ export default function ClientLogin() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute bottom-2.5 right-3 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400"
+                    className="absolute bottom-2.5 right-3 text-xs text-gray-400 hover:text-gray-200"
                   >
                     {showPassword ? "Masquer" : "Afficher"}
                   </button>
@@ -195,8 +213,8 @@ export default function ClientLogin() {
 
                 {/* Password strength indicator */}
                 {(passwordFocused || password.length > 0) && (
-                  <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-950">
-                    <p className="mb-3 text-xs font-semibold text-gray-700 dark:text-gray-300">
+                  <div className="rounded-xl border border-gray-700 bg-gray-950 p-4">
+                    <p className="mb-3 text-xs font-semibold text-gray-300">
                       Critères du mot de passe :
                     </p>
                     <ul className="space-y-2">
@@ -224,18 +242,21 @@ export default function ClientLogin() {
                 <Button
                   type="submit"
                   disabled={loading || !isPasswordStrong}
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
                 >
                   {loading ? "Création en cours…" : "Créer mon compte"}
                 </Button>
               </form>
             )}
           </div>
-        </div>
 
-        <p className="mt-6 text-center text-xs text-gray-500 dark:text-gray-500">
-          En vous connectant, vous acceptez nos conditions d'utilisation.
-        </p>
+          {/* Footer */}
+          <div className="border-t border-gray-700 bg-gray-950/40 px-8 py-4">
+            <p className="text-center text-xs text-gray-500">
+              En créant un compte, vous acceptez nos conditions d'utilisation.
+            </p>
+          </div>
+        </div>
       </div>
     </main>
   );
@@ -248,7 +269,7 @@ function PasswordRuleItem({ rule }: { rule: PasswordRule }) {
         className={`flex h-4 w-4 items-center justify-center rounded-full ${
           rule.met
             ? "bg-emerald-500 text-white"
-            : "border border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-900"
+            : "border border-gray-500 bg-gray-800"
         }`}
       >
         {rule.met ? (
@@ -266,8 +287,8 @@ function PasswordRuleItem({ rule }: { rule: PasswordRule }) {
       <span
         className={
           rule.met
-            ? "text-emerald-700 dark:text-emerald-400"
-            : "text-gray-600 dark:text-gray-400"
+            ? "text-emerald-400"
+            : "text-gray-400"
         }
       >
         {rule.label}
