@@ -1,71 +1,277 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../auth/useAuth";
+import { authApi } from "../../api/auth.api";
 import { Button } from "../../shared/ui/Button";
-import { Card } from "../../shared/ui/Card";
 import { Input } from "../../shared/ui/Input";
 import { Alert } from "../../shared/ui/Alert";
 import { getErrorMessage } from "../../shared/utils/apiError";
-import { validatePassword } from "../../shared/validation/password";
+import {
+  getPasswordRules,
+  isPasswordValid,
+  type PasswordRule,
+} from "../../shared/validation/passwordRules";
+
+type AuthMode = "signin" | "signup";
 
 export default function ClientLogin() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [mode, setMode] = useState<AuthMode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const passwordRules = getPasswordRules(password, 12);
+  const isPasswordStrong = isPasswordValid(passwordRules);
+
+  const handleSignIn = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
+    setSuccess(null);
 
-    const validation = validatePassword(password, "CLIENT");
-    if (!validation.isValid) {
-      setError(validation.message ?? "Mot de passe invalide.");
+    try {
+      setLoading(true);
+      await login(email, password);
+      navigate("/client", { replace: true });
+    } catch (err) {
+      setError("Identifiants invalides.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignUp = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError(null);
+    setSuccess(null);
+
+    if (!isPasswordStrong) {
+      setError("Le mot de passe ne respecte pas les critères requis.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Les mots de passe ne correspondent pas.");
       return;
     }
 
     try {
       setLoading(true);
-      console.log("📝 Form submitted, calling login...");
-      const result = await login(email, password);
-      console.log("🎉 Login successful, redirecting...", result);
-      navigate("/client", { replace: true });
+      await authApi.register({ email, password });
+      setSuccess("Compte créé avec succès ! Vous pouvez maintenant vous connecter.");
+      setMode("signin");
+      setPassword("");
+      setConfirmPassword("");
     } catch (err) {
-      console.error("❌ Login error in form:", err);
-      setError(getErrorMessage(err));
+      setError("Impossible de créer le compte.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 px-6 py-16 dark:bg-gray-950">
-      <div className="mx-auto max-w-md">
-        <Card title="Connexion Client">
-          <form className="space-y-4" onSubmit={handleSubmit}>
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 px-6 py-16 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
+      <div className="w-full max-w-md">
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+            Moustass
+          </h1>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            {mode === "signin"
+              ? "Bienvenue, connectez-vous à votre espace"
+              : "Créez votre compte client"}
+          </p>
+        </div>
+
+        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-gray-800 dark:bg-gray-900">
+          {/* Tabs */}
+          <div className="flex border-b border-gray-200 dark:border-gray-800">
+            <button
+              type="button"
+              onClick={() => {
+                setMode("signin");
+                setError(null);
+                setSuccess(null);
+              }}
+              className={`flex-1 px-6 py-4 text-sm font-semibold transition ${
+                mode === "signin"
+                  ? "border-b-2 border-blue-600 text-blue-600"
+                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              }`}
+            >
+              Connexion
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode("signup");
+                setError(null);
+                setSuccess(null);
+              }}
+              className={`flex-1 px-6 py-4 text-sm font-semibold transition ${
+                mode === "signup"
+                  ? "border-b-2 border-blue-600 text-blue-600"
+                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              }`}
+            >
+              Inscription
+            </button>
+          </div>
+
+          {/* Form content */}
+          <div className="p-8">
             {error ? <Alert type="error" message={error} /> : null}
-            <Input
-              label="Email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              required
-            />
-            <Input
-              label="Mot de passe"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              required
-            />
-            <Button type="submit" disabled={loading} className="w-full">
-              {loading ? "Connexion…" : "Se connecter"}
-            </Button>
-          </form>
-        </Card>
+            {success ? <Alert type="success" message={success} /> : null}
+
+            {mode === "signin" ? (
+              <form className="mt-6 space-y-5" onSubmit={handleSignIn}>
+                <Input
+                  label="Email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="votre@email.com"
+                  required
+                  autoComplete="email"
+                />
+                <div className="relative">
+                  <Input
+                    label="Mot de passe"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••••••"
+                    required
+                    autoComplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute bottom-2.5 right-3 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400"
+                  >
+                    {showPassword ? "Masquer" : "Afficher"}
+                  </button>
+                </div>
+                <Button type="submit" disabled={loading} className="w-full">
+                  {loading ? "Connexion en cours…" : "Se connecter"}
+                </Button>
+              </form>
+            ) : (
+              <form className="mt-6 space-y-5" onSubmit={handleSignUp}>
+                <Input
+                  label="Email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="votre@email.com"
+                  required
+                  autoComplete="email"
+                />
+                <div className="relative">
+                  <Input
+                    label="Mot de passe"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onFocus={() => setPasswordFocused(true)}
+                    placeholder="••••••••••••"
+                    required
+                    autoComplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute bottom-2.5 right-3 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400"
+                  >
+                    {showPassword ? "Masquer" : "Afficher"}
+                  </button>
+                </div>
+
+                {/* Password strength indicator */}
+                {(passwordFocused || password.length > 0) && (
+                  <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-950">
+                    <p className="mb-3 text-xs font-semibold text-gray-700 dark:text-gray-300">
+                      Critères du mot de passe :
+                    </p>
+                    <ul className="space-y-2">
+                      {passwordRules.map((rule, index) => (
+                        <PasswordRuleItem key={index} rule={rule} />
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                <Input
+                  label="Confirmer le mot de passe"
+                  type={showPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="••••••••••••"
+                  required
+                  autoComplete="new-password"
+                  error={
+                    confirmPassword.length > 0 && password !== confirmPassword
+                      ? "Les mots de passe ne correspondent pas"
+                      : undefined
+                  }
+                />
+                <Button
+                  type="submit"
+                  disabled={loading || !isPasswordStrong}
+                  className="w-full"
+                >
+                  {loading ? "Création en cours…" : "Créer mon compte"}
+                </Button>
+              </form>
+            )}
+          </div>
+        </div>
+
+        <p className="mt-6 text-center text-xs text-gray-500 dark:text-gray-500">
+          En vous connectant, vous acceptez nos conditions d'utilisation.
+        </p>
       </div>
     </main>
+  );
+}
+
+function PasswordRuleItem({ rule }: { rule: PasswordRule }) {
+  return (
+    <li className="flex items-center gap-2 text-xs">
+      <span
+        className={`flex h-4 w-4 items-center justify-center rounded-full ${
+          rule.met
+            ? "bg-emerald-500 text-white"
+            : "border border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-900"
+        }`}
+      >
+        {rule.met ? (
+          <svg
+            className="h-3 w-3"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={3}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        ) : null}
+      </span>
+      <span
+        className={
+          rule.met
+            ? "text-emerald-700 dark:text-emerald-400"
+            : "text-gray-600 dark:text-gray-400"
+        }
+      >
+        {rule.label}
+      </span>
+    </li>
   );
 }

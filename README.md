@@ -1,50 +1,68 @@
-# Welcome to React Router!
+# Moustass Frontend
 
-A modern, production-ready template for building full-stack React applications using React Router.
+Frontend React pour Moustass Auth - Interface Client & Admin strictement alignée avec le backend.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## 🎯 Objectif
 
-## Features
+Ce projet implémente le frontend du système d'authentification Moustass, conformément aux règles définies dans [rules_frontend.md](./rules_frontend.md).
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+## ✨ Fonctionnalités
 
-## Getting Started
+### Espace Client
+- ✅ Authentification (Sign In / Sign Up)
+- ✅ Validation en temps réel du mot de passe
+- ✅ Dashboard utilisateur
+- ✅ Inbox (préparé pour intégration future)
+- ✅ Audio (préparé pour intégration future)
+
+### Espace Admin
+- ✅ Authentification admin
+- ✅ Gestion des utilisateurs (CRUD)
+- ✅ Backups & restauration
+- ✅ Historique des backups
+
+## 🔒 Sécurité
+
+- JWT géré via sessionStorage
+- Appels API vers `https://www.moustass.com` uniquement
+- Validation UX sans fuite d'informations sensibles
+- Protection des routes par rôle (CLIENT / ADMIN)
+
+### Règles de mot de passe CLIENT
+
+- ≥ 12 caractères
+- ≥ 1 majuscule
+- ≥ 1 minuscule
+- ≥ 1 chiffre
+- ≥ 1 caractère spécial
+
+### Règles de mot de passe ADMIN
+
+- ≥ 15 caractères (+ mêmes critères que CLIENT)
+
+## 🚀 Développement
 
 ### Installation
-
-Install the dependencies:
 
 ```bash
 npm install
 ```
 
-### Development
-
-Start the development server with HMR:
+### Démarrage
 
 ```bash
 npm run dev
 ```
 
-Your application will be available at `http://localhost:5173`.
+Application disponible sur `http://localhost:5173`
 
-## Building for Production
-
-Create a production build:
+## 📦 Build en production
 
 ```bash
 npm run build
 ```
 
-## Deployment
-
-### Docker Deployment
+## 🐳 Déploiement Docker
 
 To build and run using Docker:
 
